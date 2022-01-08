@@ -109,7 +109,12 @@ function ProductEdit({ params }) {
         },
       });
       dispatch({ type: 'UPLOAD_SUCCESS' });
-      setValue('image', data.secure_url);
+
+      let str = data.secure_url;
+      var parts = str.split('/upload/');
+      const url = parts[0] + '/upload/c_pad,h_550,w_500/' + parts[1];
+
+      setValue('image', url);
       enqueueSnackbar('File uploaded successfully', { variant: 'success' });
     } catch (err) {
       dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
