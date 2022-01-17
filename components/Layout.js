@@ -121,6 +121,14 @@ export default function Layout({ title, description, children }) {
     Cookies.remove('cartItems');
     router.push('/');
   };
+  const recommendTrain = async (e) => {
+    setAnchorEl(null);
+    try {
+      axios.get('/api/recommend/train');
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div>
       <Head>
@@ -260,6 +268,11 @@ export default function Layout({ title, description, children }) {
                         }
                       >
                         Admin Dashboard
+                      </MenuItem>
+                    )}
+                    {userInfo.isAdmin && (
+                      <MenuItem onClick={(e) => recommendTrain(e)}>
+                        Train
                       </MenuItem>
                     )}
                     <MenuItem onClick={logoutClickHandler}>Logout</MenuItem>

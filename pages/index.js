@@ -37,6 +37,7 @@ export default function Home(props) {
             </Grid>
           ))}
         </Grid>
+        <h1>For You</h1>
       </div>
     </Layout>
   );
