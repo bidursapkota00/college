@@ -2,6 +2,7 @@ import nc from 'next-connect';
 import db from '../../../utils/db';
 import Product from '../../../models/Product';
 import Order from '../../../models/Order';
+import Probability from '../../../models/Probability';
 
 const handler = nc();
 
@@ -56,9 +57,13 @@ handler.get(async (req, res) => {
         success = 0;
       }
     }
-    console.log(prob);
-    // break;
   }
+  console.log(prob);
+  await Probability.deleteMany();
+  const newProb = new Probability({
+    probability: prob,
+  });
+  await newProb.save();
   await db.disconnect();
   res.send({ message: 'Trained successfully' });
 });
