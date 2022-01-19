@@ -7,6 +7,8 @@ import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { Store } from '../utils/Store';
 import ProductItem from '../components/ProductItem';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 export default function Home(props) {
   const router = useRouter();
@@ -23,6 +25,26 @@ export default function Home(props) {
     dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
     router.push('/cart');
   };
+
+  const [showRecommend, setShowRecommend] = useState([]);
+  const { userInfo } = state;
+  useEffect(() => {
+    if (userInfo) {
+      axios
+        .get('/api/recommend', {
+          params: {
+            id: userInfo._id,
+          },
+        })
+        .then(function (response) {
+          console.log(response);
+          setShowRecommend(JSON.parse(response.data.message));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }, []);
   return (
     <Layout>
       <div>
@@ -37,7 +59,21 @@ export default function Home(props) {
             </Grid>
           ))}
         </Grid>
-        <h1>For You</h1>
+        {showRecommend.length && (
+          <div>
+            <h1>For You</h1>
+            <Grid container spacing={3}>
+              {showRecommend.map((product) => (
+                <Grid item md={4} key={product.name}>
+                  <ProductItem
+                    product={product}
+                    addToCartHandler={addToCartHandler}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </div>
+        )}
       </div>
     </Layout>
   );
