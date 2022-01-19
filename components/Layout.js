@@ -122,6 +122,7 @@ export default function Layout({ title, description, children }) {
     router.push('/');
   };
   const recommendTrain = async (e) => {
+    console.log(e);
     setAnchorEl(null);
     try {
       axios.get('/api/recommend/train');
