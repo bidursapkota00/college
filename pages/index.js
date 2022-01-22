@@ -43,6 +43,16 @@ export default function Home(props) {
         .catch(function (error) {
           console.log(error);
         });
+    } else {
+      axios
+        .get('/api/recommend/admin')
+        .then(function (response) {
+          console.log(response);
+          setShowRecommend(JSON.parse(response.data.message));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   }, []);
   return (
