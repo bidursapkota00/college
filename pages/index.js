@@ -81,11 +81,12 @@ export default function Home(props) {
 
 export async function getServerSideProps() {
   await db.connect();
-  const products = await Product.find({}, '-reviews').lean();
+  let products = await Product.find().sort({ updatedAt: -1 });
+  products = JSON.parse(JSON.stringify(products));
   await db.disconnect();
   return {
     props: {
-      products: products.map(db.convertDocToObj),
+      products,
     },
   };
 }

@@ -2,7 +2,8 @@ import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
-import React, { useEffect, useContext, useReducer } from 'react';
+import Image from 'next/image';
+import React, { useEffect, useContext, useReducer, useState } from 'react';
 import {
   CircularProgress,
   Grid,
@@ -14,6 +15,12 @@ import {
   ListItemText,
   CardContent,
   CardActions,
+  TableContainer,
+  TableHead,
+  Table,
+  TableRow,
+  TableBody,
+  TableCell,
 } from '@material-ui/core';
 import { Bar } from 'react-chartjs-2';
 import { getError } from '../../utils/error';
@@ -46,6 +53,8 @@ function AdminDashboard() {
     error: '',
   });
 
+  const [forInvest, setForInvest] = useState([]);
+
   useEffect(() => {
     if (!userInfo) {
       router.push('/login');
@@ -62,6 +71,13 @@ function AdminDashboard() {
       }
     };
     fetchData();
+
+    const recommend = async () => {
+      const { data } = await axios.get('/api/recommend/admin');
+      if (JSON.parse(data.message).length)
+        setForInvest(JSON.parse(data.message));
+    };
+    recommend();
   }, []);
   return (
     <Layout title="Admin Dashboard">
@@ -195,6 +211,42 @@ function AdminDashboard() {
                   }}
                 ></Bar>
               </ListItem>
+              {forInvest && (
+                <div>
+                  <ListItem>
+                    <Typography component="h1" variant="h1">
+                      For Investment
+                    </Typography>
+                  </ListItem>
+                  <ListItem>
+                    <TableContainer>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Image</TableCell>
+                            <TableCell>Name</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {forInvest.map((item) => (
+                            <TableRow key={item.name}>
+                              <TableCell>
+                                <Image
+                                  src={item.image}
+                                  alt={item.name}
+                                  width={50}
+                                  height={50}
+                                ></Image>
+                              </TableCell>
+                              <TableCell>{item.name}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </ListItem>
+                </div>
+              )}
             </List>
           </Card>
         </Grid>
