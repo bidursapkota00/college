@@ -66,11 +66,6 @@ export default function Payment() {
                   control={<Radio />}
                 ></FormControlLabel>
                 <FormControlLabel
-                  label="Stripe"
-                  value="Stripe"
-                  control={<Radio />}
-                ></FormControlLabel>
-                <FormControlLabel
                   label="Cash"
                   value="Cash"
                   control={<Radio />}
