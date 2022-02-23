@@ -6,8 +6,7 @@ import Probability from '../../../models/Probability';
 
 const handler = nc();
 
-handler.get(async (req, res) => {
-  await db.connect();
+export const recommendFunction = async () => {
   let prob = await Probability.findOne({});
   prob = prob.probability;
   let orders = await Order.find({});
@@ -86,9 +85,14 @@ handler.get(async (req, res) => {
       }
     }
   }
-  // console.log(products);
+  return products;
+};
+
+handler.get(async (req, res) => {
+  await db.connect();
+  const d = await recommendFunction();
   await db.disconnect();
-  res.send({ message: JSON.stringify(products) });
+  res.send({ message: JSON.stringify(d) });
 });
 
 export default handler;

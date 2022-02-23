@@ -3,6 +3,7 @@ import db from '../../../utils/db';
 import Product from '../../../models/Product';
 import Order from '../../../models/Order';
 import Probability from '../../../models/Probability';
+import { recommendFunction } from './admin';
 
 const handler = nc();
 
@@ -12,6 +13,10 @@ handler.get(async (req, res) => {
   prob = prob.probability;
   const user = req.query.id;
   let orders = await Order.find({ user });
+  if (!orders.length) {
+    const d = await recommendFunction();
+    res.send({ message: JSON.stringify(d) });
+  }
   let recommendFor = [];
   for (let i = 0; i < orders.length; i++) {
     for (let j = 0; j < orders[i].orderItems.length; j++) {
