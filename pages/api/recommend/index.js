@@ -13,7 +13,7 @@ handler.get(async (req, res) => {
   prob = prob.probability;
   const user = req.query.id;
   let orders = await Order.find({ user });
-  if (!orders.length) {
+  if (orders.length == 0) {
     const d = await recommendFunction();
     res.send({ message: JSON.stringify(d) });
   }
@@ -29,8 +29,11 @@ handler.get(async (req, res) => {
   for (let i = 0; i < recommendFor.length; i++) {
     const key = recommendFor[i];
     const obj = prob[key];
-    if (obj) {
-      const array = Object.keys(obj);
+    if (obj && Object.keys(obj).length > 0) {
+      let array = [];
+      Object.keys(obj).map((o) => {
+        if (obj[o] >= 0.2) array.push(o);
+      });
       recommended = [...recommended, ...array];
     }
   }

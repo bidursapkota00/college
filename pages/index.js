@@ -69,7 +69,7 @@ export default function Home(props) {
             </Grid>
           ))}
         </Grid>
-        {showRecommend.length && (
+        {showRecommend.length ? (
           <div>
             <h1>For You</h1>
             <Grid container spacing={3}>
@@ -83,6 +83,8 @@ export default function Home(props) {
               ))}
             </Grid>
           </div>
+        ) : (
+          ''
         )}
       </div>
     </Layout>

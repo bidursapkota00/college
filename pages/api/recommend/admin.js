@@ -7,6 +7,7 @@ import Probability from '../../../models/Probability';
 const handler = nc();
 
 export const recommendFunction = async () => {
+  console.log('Recommendation based on most popular Products');
   let prob = await Probability.findOne({});
   prob = prob.probability;
   let orders = await Order.find({});
@@ -59,8 +60,11 @@ export const recommendFunction = async () => {
   for (let i = 0; i < selectedRecommendFor.length; i++) {
     const key = selectedRecommendFor[i];
     const obj = prob[key];
-    if (obj) {
-      const array = Object.keys(obj);
+    if (obj && Object.keys(obj).length > 0) {
+      let array = [];
+      Object.keys(obj).map((o) => {
+        if (obj[o] >= 0.2) array.push(o);
+      });
       recommended = [...recommended, ...array];
     }
   }
