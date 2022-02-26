@@ -10,7 +10,7 @@ import {
   createMuiTheme,
   ThemeProvider,
   CssBaseline,
-  Switch,
+  // Switch,
   Badge,
   Button,
   Menu,
@@ -99,11 +99,11 @@ export default function Layout({ title, description, children }) {
     fetchCategories();
   }, []);
 
-  const darkModeChangeHandler = () => {
-    dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
-    const newDarkMode = !darkMode;
-    Cookies.set('darkMode', newDarkMode ? 'ON' : 'OFF');
-  };
+  // const darkModeChangeHandler = () => {
+  //   dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
+  //   const newDarkMode = !darkMode;
+  //   Cookies.set('darkMode', newDarkMode ? 'ON' : 'OFF');
+  // };
   const [anchorEl, setAnchorEl] = useState(null);
   const loginClickHandler = (e) => {
     setAnchorEl(e.currentTarget);
