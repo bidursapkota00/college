@@ -14,3 +14,26 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.home__left {
+  width: 230px;
+  flex-shrink: 0;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  height: calc(100vh - 64px);
+  z-index: 10;
+}
+.home__right {
+  margin-left: 230px;
+  margin-top: 84px;
+}
+@media screen and (max-width: 959px) {
+  .home__left {
+    display: none;
+  }
+  .home__right {
+    margin-left: revert;
+    margin-top: revert;
+  }
+}

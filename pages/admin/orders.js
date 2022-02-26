@@ -125,7 +125,16 @@ function AdminOrders() {
                       </TableHead>
                       <TableBody>
                         {orders.map((order) => (
-                          <TableRow key={order._id}>
+                          <TableRow
+                            key={order._id}
+                            className={
+                              !order.isPaid
+                                ? classes.red_row
+                                : order.isDelivered
+                                ? classes.green_row
+                                : classes.yellow_row
+                            }
+                          >
                             <TableCell>{order._id.substring(20, 24)}</TableCell>
                             <TableCell>
                               {order.user ? order.user.name : 'DELETED USER'}

@@ -138,7 +138,10 @@ export default function Layout({ title, description, children }) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AppBar position="static" className={classes.navbar}>
+        <AppBar
+          position={`${router.pathname == '/' ? 'fixed' : 'static'}`}
+          className={classes.navbar}
+        >
           <Toolbar className={classes.toolbar}>
             <Box display="flex" alignItems="center">
               <IconButton
@@ -213,10 +216,10 @@ export default function Layout({ title, description, children }) {
               </form>
             </div>
             <div>
-              <Switch
+              {/* <Switch
                 checked={darkMode}
                 onChange={darkModeChangeHandler}
-              ></Switch>
+              ></Switch> */}
               <NextLink href="/cart" passHref>
                 <Link>
                   <Typography component="span">

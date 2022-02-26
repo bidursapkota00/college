@@ -56,7 +56,12 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     justifyContent: 'space-between',
   },
-  menuButton: { padding: 0 },
+  menuButton: {
+    padding: 0,
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
+  },
   mt1: { marginTop: '1rem' },
   // search
   searchSection: {
@@ -87,6 +92,27 @@ const useStyles = makeStyles((theme) => ({
   },
   sort: {
     marginRight: 5,
+  },
+  home__image_container: {
+    transition: 'all 0.5s',
+    '&:hover': {
+      transform: 'scale(1.1)',
+    },
+  },
+  red_row: {
+    backgroundColor: '#FFD2D2',
+  },
+  green_row: {
+    backgroundColor: '#DFF2BF',
+  },
+  yellow_row: {
+    backgroundColor: '#FEEFB3',
+  },
+  go_home: {
+    marginLeft: 'auto',
+    display: 'block',
+    width: 'fit-content',
+    padding: '10px',
   },
 }));
 export default useStyles;

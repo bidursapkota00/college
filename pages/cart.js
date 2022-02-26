@@ -23,8 +23,10 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import useStyles from '../utils/styles';
 
 function CartScreen() {
+  const styles = useStyles();
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const {
@@ -122,6 +124,9 @@ function CartScreen() {
                 </TableBody>
               </Table>
             </TableContainer>
+            <NextLink href="/" passHref>
+              <Link className={styles.go_home}>Go Shopping</Link>
+            </NextLink>
           </Grid>
           <Grid item md={3} xs={12}>
             <Card>

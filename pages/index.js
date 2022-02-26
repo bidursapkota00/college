@@ -1,4 +1,12 @@
-import { Grid } from '@material-ui/core';
+import {
+  Grid,
+  List,
+  ListItem,
+  Box,
+  Typography,
+  Divider,
+  ListItemText,
+} from '@material-ui/core';
 import Layout from '../components/Layout';
 import db from '../utils/db';
 import Product from '../models/Product';
@@ -8,9 +16,13 @@ import { useContext } from 'react';
 import { Store } from '../utils/Store';
 import ProductItem from '../components/ProductItem';
 import { useState } from 'react';
+import { getError } from '../utils/error';
+import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
+import NextLink from 'next/link';
 
 export default function Home(props) {
+  const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const { products } = props;
@@ -55,37 +67,72 @@ export default function Home(props) {
         });
     }
   }, []);
+  const [categories, setCategories] = useState([]);
+  const fetchCategories = async () => {
+    try {
+      const { data } = await axios.get(`/api/products/categories`);
+      setCategories(data);
+    } catch (err) {
+      enqueueSnackbar(getError(err), { variant: 'error' });
+    }
+  };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
   return (
     <Layout>
-      <div>
-        <h1>Products</h1>
-        <Grid container spacing={3}>
-          {products.map((product) => (
-            <Grid item md={4} key={product.name}>
-              <ProductItem
-                product={product}
-                addToCartHandler={addToCartHandler}
-              />
-            </Grid>
-          ))}
-        </Grid>
-        {showRecommend.length ? (
-          <div>
-            <h1>For You</h1>
-            <Grid container spacing={3}>
-              {showRecommend.map((product) => (
-                <Grid item md={4} key={product.name}>
-                  <ProductItem
-                    product={product}
-                    addToCartHandler={addToCartHandler}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </div>
-        ) : (
-          ''
-        )}
+      <div className="home">
+        <div className="home__left">
+          <List>
+            <ListItem>
+              <Box padding="10px 0">
+                <Typography>Shopping by category</Typography>
+              </Box>
+            </ListItem>
+            <Divider light />
+            {categories.map((category) => (
+              <NextLink
+                key={category}
+                href={`/search?category=${category}`}
+                passHref
+              >
+                <ListItem button component="a">
+                  <ListItemText primary={category}></ListItemText>
+                </ListItem>
+              </NextLink>
+            ))}
+          </List>
+        </div>
+        <div className="home__right">
+          {showRecommend.length ? (
+            <div>
+              <h1>For You</h1>
+              <Grid container spacing={3}>
+                {showRecommend.map((product) => (
+                  <Grid item md={4} key={product.name}>
+                    <ProductItem
+                      product={product}
+                      addToCartHandler={addToCartHandler}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </div>
+          ) : (
+            ''
+          )}
+          <h1>Products</h1>
+          <Grid container spacing={3}>
+            {products.map((product) => (
+              <Grid item md={4} key={product.name}>
+                <ProductItem
+                  product={product}
+                  addToCartHandler={addToCartHandler}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </div>
       </div>
     </Layout>
   );
