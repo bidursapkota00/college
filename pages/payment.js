@@ -66,6 +66,11 @@ export default function Payment() {
                   control={<Radio />}
                 ></FormControlLabel>
                 <FormControlLabel
+                  label="Khalti"
+                  value="Khalti"
+                  control={<Radio />}
+                ></FormControlLabel>
+                <FormControlLabel
                   label="Cash"
                   value="Cash"
                   control={<Radio />}

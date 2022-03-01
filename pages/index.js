@@ -20,8 +20,10 @@ import { getError } from '../utils/error';
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import NextLink from 'next/link';
+import useStyles from '../utils/styles';
 
 export default function Home(props) {
+  const styles = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const { state, dispatch } = useContext(Store);
@@ -97,7 +99,10 @@ export default function Home(props) {
                 passHref
               >
                 <ListItem button component="a">
-                  <ListItemText primary={category}></ListItemText>
+                  <ListItemText
+                    primary={category}
+                    className={styles.capitalize}
+                  ></ListItemText>
                 </ListItem>
               </NextLink>
             ))}
@@ -140,7 +145,7 @@ export default function Home(props) {
 
 export async function getServerSideProps() {
   await db.connect();
-  let products = await Product.find().sort({ updatedAt: -1 });
+  let products = await Product.find().sort({ updatedAt: -1 }).limit(6);
   products = JSON.parse(JSON.stringify(products));
   await db.disconnect();
   return {

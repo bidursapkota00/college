@@ -125,7 +125,9 @@ export default function ProductScreen(props) {
               </Link>
             </ListItem>
             <ListItem>
-              <Typography> Description: {product.description}</Typography>
+              <Typography className={classes.description}>
+                Description: {product.description}
+              </Typography>
             </ListItem>
           </List>
         </Grid>

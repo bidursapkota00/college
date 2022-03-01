@@ -26,6 +26,7 @@ import useStyles from '../../utils/styles';
 import { useSnackbar } from 'notistack';
 import { getError } from '../../utils/error';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import KhaltiCheckout from 'khalti-checkout-web';
 
 function reducer(state, action) {
   switch (action.type) {
@@ -120,20 +121,22 @@ function Order({ params }) {
         dispatch({ type: 'DELIVER_RESET' });
       }
     } else {
-      const loadPaypalScript = async () => {
-        const { data: clientId } = await axios.get('/api/keys/paypal', {
-          headers: { authorization: `Bearer ${userInfo.token}` },
-        });
-        paypalDispatch({
-          type: 'resetOptions',
-          value: {
-            'client-id': clientId,
-            currency: 'USD',
-          },
-        });
-        paypalDispatch({ type: 'setLoadingStatus', value: 'pending' });
-      };
-      loadPaypalScript();
+      if (order.paymentMethod == 'PayPal') {
+        const loadPaypalScript = async () => {
+          const { data: clientId } = await axios.get('/api/keys/paypal', {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          });
+          paypalDispatch({
+            type: 'resetOptions',
+            value: {
+              'client-id': clientId,
+              currency: 'USD',
+            },
+          });
+          paypalDispatch({ type: 'setLoadingStatus', value: 'pending' });
+        };
+        loadPaypalScript();
+      }
     }
   }, [order, successPay, successDeliver]);
   const { enqueueSnackbar } = useSnackbar();
@@ -192,6 +195,66 @@ function Order({ params }) {
       enqueueSnackbar(getError(err), { variant: 'error' });
     }
   }
+  const khaltiClick = () => {
+    if (order._id) {
+      var config = {
+        publicKey: 'test_public_key_6744f5cb132845f3b8993d69ded72f7a',
+        productIdentity: order._id,
+        productName: order._id,
+        productUrl: `https://college-project-gamma.vercel.app/order/${order._id}`,
+        paymentPreference: [
+          'KHALTI',
+          'EBANKING',
+          'MOBILE_BANKING',
+          'CONNECT_IPS',
+          'SCT',
+        ],
+        eventHandler: {
+          onSuccess(payload) {
+            console.log(payload);
+            const { token, amount } = payload;
+            axios
+              .post('/api/khalti', { token, amount })
+              .then(async (response) => {
+                const { idx, state } = response.data.response;
+                try {
+                  dispatch({ type: 'PAY_REQUEST' });
+                  const { data } = await axios.put(
+                    `/api/orders/${order._id}/pay`,
+                    {
+                      id: idx,
+                      state: state.name,
+                    },
+                    {
+                      headers: { authorization: `Bearer ${userInfo.token}` },
+                    }
+                  );
+                  dispatch({ type: 'PAY_SUCCESS', payload: data });
+                  enqueueSnackbar('Order is paid', { variant: 'success' });
+                } catch (err) {
+                  dispatch({ type: 'PAY_FAIL', payload: getError(err) });
+                  enqueueSnackbar(getError(err), { variant: 'error' });
+                }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          },
+          onError(error) {
+            console.log(error);
+          },
+          onClose() {
+            console.log('widget is closing');
+          },
+        },
+      };
+      console.log(config);
+      var checkout = new KhaltiCheckout(config);
+      console.log(checkout);
+      const price = order.totalPrice * 117 * 100;
+      checkout.show({ amount: price < 20000 ? price : 20000 });
+    }
+  };
 
   return (
     <Layout title={`Order ${orderId}`}>
@@ -344,7 +407,7 @@ function Order({ params }) {
                     </Grid>
                   </Grid>
                 </ListItem>
-                {!isPaid && (
+                {!isPaid && order.paymentMethod == 'PayPal' && (
                   <ListItem>
                     {isPending ? (
                       <CircularProgress />
@@ -357,6 +420,21 @@ function Order({ params }) {
                         ></PayPalButtons>
                       </div>
                     )}
+                  </ListItem>
+                )}
+                {!isPaid && order.paymentMethod == 'Khalti' && (
+                  <ListItem>
+                    <div className={classes.fullWidth}>
+                      <Button
+                        onClick={khaltiClick}
+                        id="payment-button"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                      >
+                        Khalti
+                      </Button>
+                    </div>
                   </ListItem>
                 )}
                 {userInfo.isAdmin && order.isPaid && !order.isDelivered && (

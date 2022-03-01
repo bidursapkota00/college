@@ -114,5 +114,11 @@ const useStyles = makeStyles((theme) => ({
     width: 'fit-content',
     padding: '10px',
   },
+  description: {
+    whiteSpace: 'pre-wrap',
+  },
+  capitalize: {
+    textTransform: 'capitalize',
+  },
 }));
 export default useStyles;
