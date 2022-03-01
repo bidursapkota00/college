@@ -196,28 +196,28 @@ function Order({ params }) {
     }
   }
   const khaltiClick = () => {
-    if (order._id) {
-      var config = {
-        publicKey: 'test_public_key_6744f5cb132845f3b8993d69ded72f7a',
-        productIdentity: order._id,
-        productName: order._id,
-        productUrl: `https://college-project-gamma.vercel.app/order/${order._id}`,
-        paymentPreference: [
-          'KHALTI',
-          'EBANKING',
-          'MOBILE_BANKING',
-          'CONNECT_IPS',
-          'SCT',
-        ],
-        eventHandler: {
-          onSuccess(payload) {
-            console.log(payload);
-            const { token, amount } = payload;
-            axios
-              .post('/api/khalti', { token, amount })
-              .then(async (response) => {
-                const { idx, state } = response.data.response;
-                try {
+    try {
+      if (order._id) {
+        var config = {
+          publicKey: 'test_public_key_6744f5cb132845f3b8993d69ded72f7a',
+          productIdentity: order._id,
+          productName: order._id,
+          productUrl: `https://college-project-gamma.vercel.app/order/${order._id}`,
+          paymentPreference: [
+            'KHALTI',
+            'EBANKING',
+            'MOBILE_BANKING',
+            'CONNECT_IPS',
+            'SCT',
+          ],
+          eventHandler: {
+            onSuccess(payload) {
+              console.log(payload);
+              const { token, amount } = payload;
+              axios
+                .post('/api/khalti', { token, amount })
+                .then(async (response) => {
+                  const { idx, state } = response.data.response;
                   dispatch({ type: 'PAY_REQUEST' });
                   const { data } = await axios.put(
                     `/api/orders/${order._id}/pay`,
@@ -231,28 +231,28 @@ function Order({ params }) {
                   );
                   dispatch({ type: 'PAY_SUCCESS', payload: data });
                   enqueueSnackbar('Order is paid', { variant: 'success' });
-                } catch (err) {
-                  dispatch({ type: 'PAY_FAIL', payload: getError(err) });
-                  enqueueSnackbar(getError(err), { variant: 'error' });
-                }
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            },
+            onError(error) {
+              console.log(error);
+            },
+            onClose() {
+              console.log('widget is closing');
+            },
           },
-          onError(error) {
-            console.log(error);
-          },
-          onClose() {
-            console.log('widget is closing');
-          },
-        },
-      };
-      console.log(config);
-      var checkout = new KhaltiCheckout(config);
-      console.log(checkout);
-      const price = order.totalPrice * 117 * 100;
-      checkout.show({ amount: price < 20000 ? price : 20000 });
+        };
+        console.log(config);
+        var checkout = new KhaltiCheckout(config);
+        console.log(checkout);
+        const price = order.totalPrice * 117 * 100;
+        checkout.show({ amount: price < 20000 ? price : 20000 });
+      }
+    } catch (err) {
+      dispatch({ type: 'PAY_FAIL', payload: getError(err) });
+      enqueueSnackbar(getError(err), { variant: 'error' });
     }
   };
 
