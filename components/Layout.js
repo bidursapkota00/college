@@ -154,7 +154,7 @@ export default function Layout({ title, description, children }) {
               </IconButton>
               <NextLink href="/" passHref>
                 <Link>
-                  <Typography className={classes.brand}>e-shop</Typography>
+                  <Typography className={classes.brand}>E-Shop</Typography>
                 </Link>
               </NextLink>
             </Box>
@@ -191,7 +191,10 @@ export default function Layout({ title, description, children }) {
                       component="a"
                       onClick={sidebarCloseHandler}
                     >
-                      <ListItemText primary={category}></ListItemText>
+                      <ListItemText
+                        primary={category}
+                        className={classes.capitalize}
+                      ></ListItemText>
                     </ListItem>
                   </NextLink>
                 ))}
