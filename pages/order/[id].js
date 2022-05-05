@@ -346,7 +346,11 @@ function Order({ params }) {
                               <Typography>{item.quantity}</Typography>
                             </TableCell>
                             <TableCell align="right">
-                              <Typography>${item.price}</Typography>
+                              <Typography>
+                                {paymentMethod != 'Khalti'
+                                  ? `$${item.price}`
+                                  : `Rs. ${(item.price * 117).toFixed(2)}`}
+                              </Typography>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -369,7 +373,11 @@ function Order({ params }) {
                       <Typography>Items:</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align="right">${itemsPrice}</Typography>
+                      <Typography align="right">
+                        {paymentMethod == 'Khalti'
+                          ? `Rs. ${(itemsPrice * 117).toFixed(2)}`
+                          : `$${itemsPrice}`}
+                      </Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -379,7 +387,11 @@ function Order({ params }) {
                       <Typography>Tax:</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align="right">${taxPrice}</Typography>
+                      <Typography align="right">
+                        {paymentMethod == 'Khalti'
+                          ? `Rs. ${(taxPrice * 117).toFixed(2)}`
+                          : `$${taxPrice}`}
+                      </Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -389,7 +401,11 @@ function Order({ params }) {
                       <Typography>Shipping:</Typography>
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography align="right">${shippingPrice}</Typography>
+                      <Typography align="right">
+                        {paymentMethod == 'Khalti'
+                          ? `Rs. ${(shippingPrice * 117).toFixed(2)}`
+                          : `$${shippingPrice}`}
+                      </Typography>
                     </Grid>
                   </Grid>
                 </ListItem>
@@ -402,7 +418,13 @@ function Order({ params }) {
                     </Grid>
                     <Grid item xs={6}>
                       <Typography align="right">
-                        <strong>${totalPrice}</strong>
+                        {paymentMethod == 'Khalti' ? (
+                          <strong>{`Rs. ${(totalPrice * 117).toFixed(
+                            2
+                          )}`}</strong>
+                        ) : (
+                          <strong>{`$${totalPrice}`}</strong>
+                        )}
                       </Typography>
                     </Grid>
                   </Grid>
